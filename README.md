@@ -1,58 +1,61 @@
-# deadeyeRAT v1.0 - Remote Access Trojan & Python C2 Infrastructure
+# 🎯 DeadeyeRAT v1.0 — Enterprise-Grade Remote Access Framework & C2 Infrastructure
 
-Welcome to `deadeyeRAT`, a lightweight, highly functional Remote Access Trojan (RAT) engineered for stealth deployment and full runtime control over target Windows environments. The framework utilizes a native C++ client binary paired with an assembly migration stub and a multi-threaded Python 3 Command and Control (C2) server.
+Welcome to the comprehensive technical deployment guide for **DeadeyeRAT**, a modular, high-efficiency Remote Access Trojan (RAT) architecture engineered for low-profile execution, persistent system instrumentation, and synchronized exfiltration control. 
 
-## 🎯 Primary Capabilities
-
-### 1. Persistence & Stealth Execution
-* **Registry Hijacking:** The payload moves its executable directly into the victim's hidden user environment (`%APPDATA%`) and maps a key into the `Software\Microsoft\Windows\CurrentVersion\Run` hive under the fake process name `WindowsUpdater.exe`.
-* **Low-Profile Entry:** Integrates an assembly module (`c++.asm`) to dynamic-link runtime APIs, reducing the compilation footprint and confusing basic security scanners.
-* **Mutant Locking:** Employs a unique hardcoded system Mutex (`WindowsUpdateMutex`) to prevent duplicate instances from running simultaneously on the target.
-
-### 2. Live Surveillance Suite
-* **Hidden Keylogger:** Runs silently on a separate worker thread using window polling mechanics to capture alphanumeric keyboard input, dumping records straight back to the C2 panel.
-* **Clipboard Sniffing:** Hooks the OS clipboard every 1000ms to instantly steal copied strings, text logs, passwords, or transaction data.
-* **Media Hijacking:** Captures continuous desktop screenshots via GDI graphics buffers, fires hidden PowerShell webcam capture macros, and initializes remote audio recording through local microphone streams.
-
-### 3. Credential Harvesting & System Control
-* **Password Cracking:** Automation routines built to parse native browser directories, scraping offline application storage databases for saved account credentials and stored WiFi network profile passwords.
-* **Network & Process Control:** Full remote process injection capabilities allowing operators to query running software lists, forcefully kill tasks, download raw remote binaries via URL, or execute command shell arguments.
+This repository provides an end-to-end framework consisting of a native **Win32 C++ Client**, a lightweight **MASM Assembly Stub**, and a multi-threaded **Python 3 Command & Control (C2) Server**.
 
 ---
 
-## 💻 Operator Interface & C2 Console
+## 💎 Core Architecture & Capabilities
 
-The management script (`c2.py`) builds an interactive command-line dashboard allowing one operator to maintain, control, and communicate with all active incoming connections.
+### ⚡ Evasion & Persistence Engine
+*   **Registry Hive Persistence:** Migrates the compiled payload directly into the hidden user configuration directory (`%APPDATA%`) and registers a persistent runtime key within the Windows Registry hive under the system masquerade name `WindowsUpdater.exe`.
+*   **Low-Level Assembly Hooking:** Leverages a customized Macro Assembler (`c++.asm`) routine to dynamically resolve core system APIs at runtime, effectively flattening the import address table (IAT) and bypassing static heuristic scanners.
+*   **Single-Instance Execution:** Utilizes a system-wide Mutex object (`WindowsUpdateMutex`) to enforce singular host execution and prevent resource conflicts or detection spikes.
 
-### Main Control Commands
-* `list`: Renders a clean grid displaying all active systems, logging their assigned ID, public external IP, date of initial infection, and last active heartbeat status.
-* `select <client_id>`: Contextually locks the operator terminal onto one specific targeted system to run focused commands.
-* `broadcast <command>`: Pushes an automated command string across every single machine connected to the botnet simultaneously.
-* `exit`: Safely drops connections and shuts down the listening server socket.
+### 🕵️ Advanced Surveillance & Monitoring Suite
+*   **Asynchronous Keylogger:** Implements a background worker thread executing non-blocking key state polling (`GetAsyncKeyState`) to monitor and log alphanumeric input dynamically.
+*   **Live Clipboard Hooking:** Continuously monitors the Windows clipboard buffer interface every 1000ms, capturing active text data, transaction details, and volatile strings.
+*   **Synchronized Media Extraction:** Captures desktop frame buffers using native Graphical Device Interface (GDI) context copying (`BitBlt`), leverages PowerShell sub-processes for webcam snapshots, and serializes audio inputs through local microphone controllers.
 
-### Compromised Host Commands
-Once a specific device session is loaded, the operator has access to the following instruction set:
+### 🗄️ Credential Harvesting & System Control
+*   **Local Credential Stealer:** Auto-parses browser application profile directories to locate and extract offline local database files containing saved authentication configurations and previously joined Wi-Fi network profile security keys.
+*   **Post-Exploitation Interface:** Full remote command shell injection capabilities allowing an operator to list live system tasks, forcibly terminate security processes, alter host system properties, and securely download secondary stage payloads.
 
-| Command | Action | Payload Output |
+---
+
+## 📊 Operator C2 Shell Dashboard
+
+The centralized controller script (`c2.py`) initializes a multi-threaded TCP socket listener, managing stateful active connections and providing the operator with an interactive command-line workspace.
+
+### Infrastructure Management Commands
+*   `list` — Renders an aligned dashboard matrix highlighting all active endpoints, their network interfaces, geolocation profiles, and check-in timestamps.
+*   `select <client_id>` — Binds the active terminal interface directly to a targeted endpoint to execute focused system instructions.
+*   `broadcast <command>` — Distributes an automated instruction string across every active connection concurrently.
+*   `exit` — Instructs the master socket to securely terminate network listeners and drop client hooks.
+
+### Interactive Host Sub-Shell Commands
+
+| System Directive | Operational Target | Network Payload Output |
 | :--- | :--- | :--- |
-| `SYSINFO` | Scrapes hardware properties, OS version, RAM capacity, and drive storage space. | Text Sheet |
-| `NETINFO` | Maps hostnames, localized IP addresses, network interface adapters, and physical MAC addresses. | Text Sheet |
-| `SCREENSHOT` | Takes a live background capture of the current active monitor display. | `.bmp` Image |
-| `WEBCAM` | Forces webcam video capture without lighting up standard camera indicators. | `.jpg` Image |
-| `MIC <sec>` | Activates the local microphone array to record audio for a set duration. | `.wav` Audio |
-| `PASSWORDS` | Commands the target client to extract and parse saved browser credentials. | Decrypted Log |
-| `WIFI` | Extracts clean text data for all previously saved wireless network security keys. | Decrypted Log |
-| `EXEC <cmd>` | Executes a silent, hidden console command natively on the target background. | Success / Fail |
-| `DOWNLOAD` | Instructs the host to download a secondary payload from a web link onto the drive. | Success / Fail |
-| `KILL <pid>` | Terminates a running system process ID (useful for stopping security tools). | Success / Fail |
-| `EXIT` | Wipes the active execution process, forcing the target client to terminate completely. | Connection Drop |
+| <span style="color:#38bdf8">**SYSINFO**</span> | Queries host OS build version, hardware configurations, and storage capacity. | Raw Data String |
+| <span style="color:#38bdf8">**NETINFO**</span> | Maps logical adapter structures, local IP configurations, and hardware MAC targets. | Raw Data String |
+| <span style="color:#f43f5e">**SCREENSHOT**</span> | Forces a background frame capture of the current primary monitor screen workspace. | Base64 Encoded `.bmp` |
+| <span style="color:#f43f5e">**WEBCAM**</span> | Captures a background snapshot utilizing the device's integrated imaging array. | Base64 Encoded `.jpg` |
+| <span style="color:#f43f5e">**MIC &lt;sec&gt;**</span> | Instructs the host soundcard to capture microphone audio for a designated duration. | Base64 Encoded `.wav` |
+| <span style="color:#a855f7">**PASSWORDS**</span> | Triggers extraction routines targeting local browser authentication profiles. | Decrypted Log Text |
+| <span style="color:#a855f7">**WIFI**</span> | Extracts clear-text configuration profiles for all stored wireless security keys. | Decrypted Log Text |
+| <span style="color:#10b981">**EXEC &lt;cmd&gt;**</span> | Forwards a silent command-line argument to run directly inside the system background. | Execution Status |
+| <span style="color:#10b981">**DOWNLOAD**</span> | Commands the remote agent to download an external file payload to the local storage. | Execution Status |
+| <span style="color:#10b981">**KILL &lt;pid&gt;**</span> | Forcibly stops a targeted host process ID (useful for disabling system defense software). | Execution Status |
+| <span style="color:#e11d48">**EXIT**</span> | Triggers an immediate wipe of runtime configurations and forces agent process termination. | Connection Drop |
 
 ---
 
-## 🛠️ Deployment & Build Guide
+## 🛠️ Step-by-Step Deployment Instructions
 
-### Step 1: Configure the Infrastructure
-Before compiling the client, you must configure your network listening target details inside the `config.json` text block:
+### 1. Pre-Deployment Configuration
+Prior to generating the operational client payload, update the global environment parameters within the application configuration matrix (`config.json`):
 
 ```json
 {
@@ -65,22 +68,32 @@ Before compiling the client, you must configure your network listening target de
   "maxRetries": 10,
   "keyloggerEnabled": true,
   "clipboardEnabled": true,
-  "encryptionKey": "RAT_KEY_2023_SECURE"
+  "encryptionKey": "ENTERPRISE_ROTATING_KEY_MASK"
 }
 ```
-*Note: Make sure the `encryptionKey` matches the string variable defined inside the server code exactly, or the symmetric XOR network stream decipher will corrupt communications.*
+*Note: The symmetric network stream relies on a fast stream cipher. The configuration key value must precisely match the key hardcoded into the controller application, or the cipher stream will corrupt communications.*
 
-### Step 2: Initialize the Control Server
-Launch the master socket listener on an operational server or virtual environment:
+### 2. Launching the Command and Control Infrastructure
+Initialize the primary TCP server socket on your host environment or Virtual Private Server (VPS). Ensure firewall boundaries are open to forward traffic through your listening port:
+
 ```bash
+# Verify environment dependencies and instantiate the listener
 python3 c2.py
 ```
-The console will start monitoring port `8888` for incoming TCP connection handshakes.
+The application will begin monitoring port `8888` for inbound synchronization handshakes.
 
-### Step 3: Compile the Payload
-To package the C++ client source file (`RAT.cpp`) alongside the low-level assembly code hooks (`c++.asm`), compile the release payload via the developer command prompt using an optimization flag to strip debug headers:
+### 3. Native Agent Compilation
+To package the primary C++ engine (`RAT.cpp`) in tandem with the Macro Assembly evasion stub (`c++.asm`), launch a developer shell terminal environment and execute the compiler toolchain, passing optimization flags to strip debug symbols:
 
 ```bash
-cl.exe /O2 /MT RAT.cpp /link /SUBSYSTEM:WINDOWS ws2_32.lib wininet.lib urlmon.lib user32.lib gdi32.lib
+# Execute the MSVC compiler toolchain to package optimized binaries
+cl.exe /O2 /MT RAT.cpp /link /SUBSYSTEM:WINDOWS ws2_32.lib wininet.lib urlmon.lib user32.lib gdi32.lib advapi32.lib
 ```
-This compilation outputs a final executable binary ready for distribution. Once launched on a machine, it will attempt to silently connect back to the operational panel.
+This build process yields a standalone executable binary ready for direct implementation. Upon execution, the payload automatically maps persistence keys and connects back to the active operator shell.
+
+---
+
+## 📄 Licensing & Technical References
+*   **Project License:** This deployment kit is shared under the terms of the open-source [MIT License](https://opensource.org).
+*   **Network Layer:** Leverages standard [WinSock2 Infrastructure](https://microsoft.com) for persistent high-throughput communication.
+*   **Assembly Core:** Built utilizing standard x86 calling structures via the [Microsoft Macro Assembler (MASM)](https://microsoft.com).
